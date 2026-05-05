@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -12,13 +13,11 @@ from users.views import RegisterView, CustomTokenObtainPairView
 router = DefaultRouter()
 router.register(r'habits', HabitViewSet, basename='habit')
 
-# Настройка Swagger документации
 schema_view = get_schema_view(
     openapi.Info(
         title="Habit Tracker API",
         default_version='v1',
         description="API для трекера полезных привычек",
-        contact=openapi.Contact(email="support@habittracker.com"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -30,9 +29,7 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # Swagger UI
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('swagger.json/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('', lambda request: redirect('/admin/'), name='root'),
 ]
