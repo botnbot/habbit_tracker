@@ -53,4 +53,3 @@ class HabitPublicSerializer(serializers.ModelSerializer):
             'id', 'user', 'place', 'time', 'action', 'is_pleasant',
             'periodicity', 'duration', 'created_at'
         ]
-        read_only_fields = '__all__'
