@@ -32,7 +32,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         """Возвращает только привычки текущего пользователя"""
         return Habit.objects.filter(user=self.request.user)
 
-    @action(detail=False, methods=['get'], url_path='public')
+    @action(detail=False, methods=['get'], url_path='public', permission_classes=[permissions.AllowAny])
     def public_habits(self, request):
         """
         Эндпоинт для получения списка публичных привычек.
