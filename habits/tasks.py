@@ -19,7 +19,7 @@ def send_habit_reminders():
     habits = Habit.objects.filter(
         time__hour=current_time.hour,
         time__minute=current_time.minute,
-        is_pleasant=False
+        is_pleasant=False,
     )
 
     sent_count = 0

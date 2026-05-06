@@ -7,6 +7,7 @@ from .serializers import HabitSerializer, HabitPublicSerializer
 
 class HabitPagination(LimitOffsetPagination):
     """Пагинация: 5 привычек на страницу"""
+
     default_limit = 5
     max_limit = 100
 
@@ -24,6 +25,7 @@ class HabitViewSet(viewsets.ModelViewSet):
     """
     ViewSet для работы с привычками.
     """
+
     serializer_class = HabitSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     pagination_class = HabitPagination
@@ -32,7 +34,12 @@ class HabitViewSet(viewsets.ModelViewSet):
         """Возвращает только привычки текущего пользователя"""
         return Habit.objects.filter(user=self.request.user)
 
-    @action(detail=False, methods=['get'], url_path='public', permission_classes=[permissions.AllowAny])
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="public",
+        permission_classes=[permissions.AllowAny],
+    )
     def public_habits(self, request):
         """
         Эндпоинт для получения списка публичных привычек.

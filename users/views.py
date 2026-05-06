@@ -11,6 +11,7 @@ class RegisterView(generics.CreateAPIView):
     Регистрация нового пользователя.
     POST /api/register/
     """
+
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializer
@@ -21,4 +22,5 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     Получение JWT токена.
     POST /api/token/
     """
+
     serializer_class = CustomTokenObtainPairSerializer
