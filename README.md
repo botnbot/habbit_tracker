@@ -159,16 +159,18 @@ pytest -v
 pytest --cov=habits --cov=users --cov-report=term --cov-report=html
 ```
 #### Покрытие кода
-Итоговое покрытие: 84% (превышает требуемые 80%)
-| Компонент             |Покрытие|
-|-----------------------|--------|
-| habits/models.py      | 100%   |
-| habits/serializers.py | 88%    |
-| habits/views.py       | 93%    |
-| users/models.py       | 90%    |
-| users/serializers.py  | 91%    |
-| users/views.py        | 100%   |
-| **Общее**             | **84%**|
+
+Итоговое покрытие: **84%** (превышает требуемые 80%)
+
+| Компонент | Покрытие |
+|-----------|----------|
+| habits/models.py | 100% |
+| habits/serializers.py | 88% |
+| habits/views.py | 93% |
+| users/models.py | 90% |
+| users/serializers.py | 91% |
+| users/views.py | 100% |
+| **Общее** | **84%** |
 
 ## 🛠 Технологии
 Django 6.0.4 — веб-фреймворк
