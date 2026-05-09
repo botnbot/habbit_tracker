@@ -22,8 +22,6 @@ ENV/
 db.sqlite3
 media/
 staticfiles/
-coverage/
-htmlcov/
 
 # IDE
 .idea/
@@ -45,3 +43,6 @@ celerybeat.pid
 *.pem
 *.key
 *.crt
+
+# Logs
+*.log

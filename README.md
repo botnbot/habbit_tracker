@@ -46,7 +46,7 @@ poetry install
 **3. Создать файл окружения:**
 
 ```bash
-cp .env.sample .env
+cp .env.template
 ```
 #### Отредактировать .env, указав свои значения
 **4. Применить миграции:**
@@ -122,6 +122,67 @@ curl -X POST http://localhost:8000/api/habits/ \
   -H "Content-Type: application/json" \
   -d '{"place": "Дом", "time": "09:00", "action": "Сделать зарядку", "duration": 60, "periodicity": 1}'
 ```
+
+### ✅ Валидаторы
+Валидация вынесена в отдельный модуль habits/validators.py
+
+| № | Правило валидации |
+|---|-------------------|
+| 1 | Нельзя одновременно указывать `reward` и `related_habit` |
+| 2 | `duration` не может превышать 120 секунд |
+| 3 | `related_habit` может быть только приятной привычкой |
+| 4 | У приятной привычки не может быть `reward` или `related_habit` |
+| 5 | `periodicity` должна быть в диапазоне 1-7 дней |
+Пример валидации в коде:
+
+```python
+# habits/validators.py
+def validate_reward_and_related_habit(reward, related_habit, is_pleasant):
+    if reward and related_habit:
+        raise ValidationError('Нельзя одновременно указывать вознаграждение и связанную привычку')
+    
+    if is_pleasant and (reward or related_habit):
+        raise ValidationError('Приятная привычка не может иметь вознаграждение или связанную привычку')
+    
+    if related_habit and not related_habit.is_pleasant:
+        raise ValidationError('Связанная привычка должна быть приятной')
+```
+## 📄 Пагинация
+### Пагинация вынесена в отдельный модуль habits/pagination.py
+
+```python
+# habits/pagination.py
+from rest_framework.pagination import LimitOffsetPagination
+
+class HabitPagination(LimitOffsetPagination):
+    default_limit = 5
+    max_limit = 100
+```
+Параметры пагинации:
+
+| Параметр | Описание                                                       |
+|---|----------------------------------------------------------------|
+| limit | Количество записей на страницу                                 |
+| offset | Смещение от начала                       |
+| count | `related_habit` может быть только приятной привычкой           |
+| next | У приятной привычки не может быть `reward` или `related_habit` |
+| previous| `periodicity` должна быть в диапазоне 1-7 дней                 |
+
+Пример ответа API с пагинацией:
+
+
+```json
+{
+    "count": 10,
+    "next": "http://localhost:8000/api/habits/?limit=5&offset=5",
+    "previous": null,
+    "results": [
+        { ... },
+        { ... }
+    ]
+}
+```
+
 ## 🤖 Telegram Бот
 ### Настройка бота:
 Напишите @BotFather в Telegram
@@ -133,7 +194,7 @@ curl -X POST http://localhost:8000/api/habits/ \
 Укажите username бота (должен заканчиваться на _bot)
 
 Скопируйте полученный токен в .env:
-```text
+```python
 TELEGRAM_BOT_TOKEN=ваш_токен
 ```
 ### Использование бота
@@ -156,19 +217,9 @@ pytest -v
 ```
 ### Запуск с проверкой покрытия
 ```bash
-pytest --cov=habits --cov=users --cov-report=term --cov-report=html
+pytest --cov=habits --cov=users --cov-report=term-missing --cov-report=html
+
 ```
-#### Покрытие кода
-Итоговое покрытие: 84% (превышает требуемые 80%)
-| Компонент             |Покрытие|
-|-----------------------|--------|
-| habits/models.py      | 100%   |
-| habits/serializers.py | 88%    |
-| habits/views.py       | 93%    |
-| users/models.py       | 90%    |
-| users/serializers.py  | 91%    |
-| users/views.py        | 100%   |
-| **Общее**             | **84%**|
 
 ## 🛠 Технологии
 Django 6.0.4 — веб-фреймворк
